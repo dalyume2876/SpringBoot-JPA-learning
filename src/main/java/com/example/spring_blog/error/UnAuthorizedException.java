@@ -1,0 +1,1 @@
+package com.example.spring_blog.error;public class UnAuthorizedException extends RuntimeException{    public UnAuthorizedException(String msg) {        super(msg);    }}

@@ -1,0 +1,1 @@
+package com.example.spring_blog.util;import java.security.SecureRandom;public class MailUtil {//    예측하기 어려운 난수생성 (보안)    private static final SecureRandom RANDOM = new SecureRandom();//    6자리 인증번호 생성(100000 ~ 999999)    public static String generateCode() {        int code = 100000 + RANDOM.nextInt(900000);        return String.valueOf(code);    }}

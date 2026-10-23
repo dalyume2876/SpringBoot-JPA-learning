@@ -1,0 +1,1 @@
+package com.example.spring_blog.util;public class Define {    public static final String SESSION_USER = "sessionUser";    public static final String EMAIL_CODE_PREFIX = "emailCode_";    public static final String VERIFIED_EMAIL = "verifiedEmail"; // 인증을 마친 이메일 주소    public static final int CODE_EXPIRE_IN_MINUTES = 1;}

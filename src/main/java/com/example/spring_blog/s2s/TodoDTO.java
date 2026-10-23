@@ -1,0 +1,1 @@
+package com.example.spring_blog.s2s;import com.fasterxml.jackson.annotation.JsonIgnoreProperties;import lombok.Data;@Data//외부서버에서는 우리 서버에 불필요한 내용까지 많은 데이터를 전달함.//선언이 안된 데이터를 무시함. (안전상 이유)@JsonIgnoreProperties(ignoreUnknown = true)public class TodoDTO {    private Integer userId;    private Integer id;    private String title;    private boolean completed;}

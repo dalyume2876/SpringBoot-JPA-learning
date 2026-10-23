@@ -1,0 +1,1 @@
+package com.example.spring_blog.error;public class Exception401 extends RuntimeException{    public Exception401(String msg) {        super(msg);    }}

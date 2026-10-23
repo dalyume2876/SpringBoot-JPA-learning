@@ -1,0 +1,1 @@
+package com.example.spring_blog.user;public enum Role {    ADMIN, USER}

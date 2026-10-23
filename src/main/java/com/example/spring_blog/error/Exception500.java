@@ -1,0 +1,1 @@
+package com.example.spring_blog.error;public class Exception500 extends RuntimeException{    public Exception500(String msg) {        super(msg);    }}
