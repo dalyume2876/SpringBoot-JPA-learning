@@ -63,7 +63,7 @@
 //    void update_test() {
 //        Long id = boardJpaRepository.save(new Board("title", "content", author)).getId();
 //        flushAndClear();
-//        BoardRequest.updateDTO request = new BoardRequest.updateDTO();
+//        BoardRequest.UpdateDTO request = new BoardRequest.UpdateDTO();
 //        request.setTitle("updated title");
 //        request.setContent("updated content");
 //        boardJpaRepository.findById(id).orElseThrow().update(request);

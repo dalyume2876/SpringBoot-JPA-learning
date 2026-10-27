@@ -1,0 +1,1 @@
+package com.example.spring_blog.error;public class NotEnoughPointException extends RuntimeException{    public NotEnoughPointException(String msg) {        super(msg);    }}

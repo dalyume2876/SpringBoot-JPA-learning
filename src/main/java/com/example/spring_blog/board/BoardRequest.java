@@ -1,1 +1,53 @@
-package com.example.spring_blog.board;import com.example.spring_blog.error.Exception400;import com.example.spring_blog.user.User;import lombok.Data;public class BoardRequest {    @Data    public static class saveDTO {        private String title;        private String content;        public void validate() {            if(title == null || title.trim().isEmpty()) {                throw new Exception400("제목은 필수");            }            if(content == null || content.trim().isEmpty()) {                throw new Exception400("내용은 필수");            }        }        public Board toEntity(User user) {            return Board.builder()                    .title(title)                    .content(content)                    .user(user)                    .build();        }    }    @Data    public static class updateDTO {        private String title;        private String content;        public void validate() {            if(title == null || title.trim().isEmpty()) {                throw new Exception400("제목은 필수");            }            if(content == null || content.trim().isEmpty()) {                throw new Exception400("내용은 필수");            }        }    }}
+package com.example.spring_blog.board;
+
+import com.example.spring_blog.error.Exception400;
+import com.example.spring_blog.user.User;
+import lombok.Data;
+
+public class BoardRequest {
+
+    @Data
+    public static class saveDTO {
+        private String title;
+        private String content;
+        private boolean premium;
+
+        public void validate() {
+            if(title == null || title.trim().isEmpty()) {
+                throw new Exception400("제목은 필수");
+            }
+
+            if(content == null || content.trim().isEmpty()) {
+                throw new Exception400("내용은 필수");
+            }
+        }
+
+        public Board toEntity(User user) {
+            return Board.builder()
+                    .title(title)
+                    .content(content)
+                    .premium(premium)
+                    .user(user)
+                    .build();
+        }
+    }
+
+    @Data
+    public static class UpdateDTO {
+        private String title;
+        private String content;
+        private boolean premium;
+
+        public void validate() {
+            if(title == null || title.trim().isEmpty()) {
+                throw new Exception400("제목은 필수");
+            }
+
+            if(content == null || content.trim().isEmpty()) {
+                throw new Exception400("내용은 필수");
+            }
+        }
+    }
+
+
+}
