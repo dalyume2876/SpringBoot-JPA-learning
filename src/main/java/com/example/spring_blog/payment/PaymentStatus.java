@@ -1,0 +1,1 @@
+package com.example.spring_blog.payment;public enum PaymentStatus {    READY, //결제 예정    PAID // 결재 확인 및 포인트지급 완료}
