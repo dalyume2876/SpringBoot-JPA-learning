@@ -1,6 +1,7 @@
 package com.example.spring_blog.user; // 확인 필요: UserService와 같은 user 패키지라고 추측
 
 import com.example.spring_blog.error.Exception400; // 확인 필요: Exception400의 패키지를 error로 추측
+import com.example.spring_blog.user.apiLogin.OauthProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

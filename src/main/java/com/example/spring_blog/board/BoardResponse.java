@@ -1,1 +1,153 @@
-package com.example.spring_blog.board;import com.example.spring_blog.util.MyDateUtil;import lombok.AllArgsConstructor;import lombok.Data;import org.springframework.data.domain.Page;import java.util.ArrayList;import java.util.List;/** * 게시글 응답 DTO * <p> * Service(트랜잭션)에서 엔티티를 DTO로 변환해서 반환한다. * 뷰는 엔티티가 아닌 DTO만 사용하므로 OSIV를 꺼도 지연로딩 오류가 나지 않는다. * 화면에 필요한 값만 듬으므로 계층간 결합도도 낮아진다. */public class BoardResponse {    @Data    public static class PageDto {        private List<ListDTO> content; // 현재 페이지 게시글 목록        private int size; //페이지 크기        private int currentPage;        private int totalPages;        private Long totalElements;        private boolean hasPrevious;        private boolean hasNext;        private List<PageLink> pageLinks;        private int previousPage;        private int nextPage;        public PageDto(Page<Board> page) {            this.content = page.getContent().stream().map(ListDTO::new).toList();            this.size = page.getSize();            this.currentPage = page.getNumber() + 1;            this.totalPages = page.getTotalPages();            this.totalElements = page.getTotalElements();            this.hasPrevious = page.hasPrevious();            this.hasNext = page.hasNext();            this.previousPage = currentPage - 1;            this.nextPage = currentPage + 1;            this.pageLinks = makePageLinks(currentPage, totalPages);        }        private List<PageLink> makePageLinks(int currentPage, int totalPages) {            List<PageLink> links = new ArrayList<>();            int startPage = Math.max(1, currentPage - 2); // 1보다 작아지지않게하는 코드(왜 -2일까?)            int endPage = Math.min(totalPages, currentPage + 2); // 전체 페이지를 넘지 않게 (왜 +2일까?)            for (int i = startPage; i <= endPage; i++) {                links.add(new PageLink(i, i == currentPage));            }            return links;        }    }    @Data    @AllArgsConstructor    public static class PageLink {        private int number;        private boolean active;    }    //    게시글 상세 응답 dto    @Data    public static class DetailDTO {        private Long id;        private String title;        private String content;        private Long userId;        private String username;        private String createdAt;        public DetailDTO(Board board) {            this.id = board.getId();            this.title = board.getTitle();            this.content = board.getContent();            if (board.getUser() != null) {                this.userId = board.getUser().getId();                this.username = board.getUser().getUsername();            }            if (board.getCreatedAt() != null) {                this.createdAt = MyDateUtil.timestampFormat(board.getCreatedAt());            }        }    }    @Data    public static class ListDTO {        private Long id;        private String title;        private String username;        private String createdAt;        public ListDTO(Board board) {            this.id = board.getId();            this.title = board.getTitle();            // JOIN FETCH로 이미 가져온 user 사용할 예정(추가 쿼리 발생 없음)            if (board.getUser() != null) {                this.username = board.getUser().getUsername();            }            this.createdAt = board.getTime();        }    }    @Data    public static class UpdateFormDTO {        private Long id;        private String title;        private String content;        public UpdateFormDTO(Board board) {            this.id = board.getId();            this.title = board.getTitle();            this.content = board.getContent();        }    }}
+package com.example.spring_blog.board;
+
+
+import com.example.spring_blog.util.MyDateUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.data.domain.Page;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 게시글 응답 DTO
+ * <p>
+ * Service(트랜잭션)에서 엔티티를 DTO로 변환해서 반환한다.
+ * 뷰는 엔티티가 아닌 DTO만 사용하므로 OSIV를 꺼도 지연로딩 오류가 나지 않는다.
+ * 화면에 필요한 값만 듬으므로 계층간 결합도도 낮아진다.
+ */
+public class BoardResponse {
+
+    @Data
+    public static class PageDto {
+        private List<ListDTO> content; // 현재 페이지 게시글 목록
+        private int size; //페이지 크기
+        private int currentPage;
+        private int totalPages;
+        private Long totalElements;
+        private boolean hasPrevious;
+        private boolean hasNext;
+        private List<PageLink> pageLinks;
+        private int previousPage;
+        private int nextPage;
+
+        public PageDto(Page<Board> page) {
+            this.content = page.getContent().stream().map(ListDTO::new).toList();
+            this.size = page.getSize();
+            this.currentPage = page.getNumber() + 1;
+            this.totalPages = page.getTotalPages();
+            this.totalElements = page.getTotalElements();
+            this.hasPrevious = page.hasPrevious();
+            this.hasNext = page.hasNext();
+            this.previousPage = currentPage - 1;
+            this.nextPage = currentPage + 1;
+
+            this.pageLinks = makePageLinks(currentPage, totalPages);
+        }
+
+        private List<PageLink> makePageLinks(int currentPage, int totalPages) {
+            List<PageLink> links = new ArrayList<>();
+            int startPage = Math.max(1, currentPage - 2); // 1보다 작아지지않게하는 코드(왜 -2일까?)
+            int endPage = Math.min(totalPages, currentPage + 2); // 전체 페이지를 넘지 않게 (왜 +2일까?)
+
+            for (int i = startPage; i <= endPage; i++) {
+                links.add(new PageLink(i, i == currentPage));
+            }
+
+            return links;
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class PageLink {
+        private int number;
+        private boolean active;
+    }
+
+    //    게시글 상세 응답 dto
+    @Data
+    public static class DetailDTO {
+        private Long id;
+        private String title;
+        private String content;
+        private Long userId;
+        private String username;
+        private String createdAt;
+        private boolean premium;
+        private int price;
+        private boolean owner;
+        private boolean purchased;
+        private boolean canRead;
+
+        public DetailDTO(Board board, boolean owner, boolean purchased) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.premium = board.isPremium();
+
+            if (board.getUser() != null) {
+                this.userId = board.getUser().getId();
+                this.username = board.getUser().getUsername();
+            }
+
+            if (board.getCreatedAt() != null) {
+                this.createdAt = MyDateUtil.timestampFormat(board.getCreatedAt());
+            }
+
+            // 수정 확인: 구매 가격과 안내 가격을 같은 상수로 사용한다.
+            this.price = Board.PREMIUM_PRICE;
+            this.owner = owner;
+            this.purchased = purchased;
+
+            this.canRead = !premium || owner || purchased;
+
+            // 수정 확인: 열람 권한이 없으면 DTO에서도 본문을 제거한다.
+            if (!canRead) {
+                this.content = null;
+            }
+
+            if (board.getUser() != null) {
+                this.userId = board.getUser().getId();
+                this.username = board.getUser().getUsername();
+            }
+
+            if (board.getCreatedAt() != null) {
+                this.createdAt = MyDateUtil.timestampFormat(board.getCreatedAt());
+            }
+        }
+    }
+
+    @Data
+    public static class ListDTO {
+        private Long id;
+        private String title;
+        private String username;
+        private String createdAt;
+
+        public ListDTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            // JOIN FETCH로 이미 가져온 user 사용할 예정(추가 쿼리 발생 없음)
+            if (board.getUser() != null) {
+                this.username = board.getUser().getUsername();
+            }
+            this.createdAt = board.getTime();
+        }
+    }
+
+    @Data
+    public static class UpdateFormDTO {
+        private Long id;
+        private String title;
+        private String content;
+        private boolean premium;
+
+        public UpdateFormDTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.premium = board.isPremium();
+        }
+    }
+}
